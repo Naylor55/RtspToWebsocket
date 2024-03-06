@@ -1,0 +1,201 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>websocket客户端，使用flvjs播放视频</title>
+    <style>
+        .websocket {
+            width: 500px;
+            height: 500px;
+            border: 1px solid #ccc;
+            margin: 10px auto 0 auto;
+            text-align: center;
+        }
+
+        #receive-box {
+            width: 300px;
+            height: 200px;
+            overflow: auto;
+            margin: 0 auto 10px auto;
+            border: 1px solid #25d1ff;
+        }
+
+        #msg-need-send {
+            width: 300px;
+            height: 100px;
+            resize: none;
+            border-radius: 5px;
+        }
+
+        #send-btn {
+            border: none;
+            border-radius: 5px;
+            background: #25d1ff;
+            padding: 5px 10px;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        #exit {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+
+<body>
+    <h5>socket-client</h5>
+    <div class="websocket">
+        <div class="receive">
+            <p>服务端返回的消息：</p>
+            <div id="receive-box"></div>
+        </div>
+        <div class="send">
+            <p>给服务端发送消息：</p>
+            <textarea type="text" id="msg-need-send"></textarea>
+            <p>
+                <button id="send-btn">点击发消息给服务端</button>
+            </p>
+        </div>
+        <button id="exit">关闭连接</button>
+    </div>
+    <h5>播放器</h5>
+    <div>
+        <video id="my-player" preload="auto" muted autoplay type="rtmp/flv">
+            <source src="">
+        </video>
+    </div>
+    <div>
+        <video id="my-player2" preload="auto" muted autoplay type="rtmp/flv">
+            <source src="">
+        </video>
+    </div>
+    <div>
+        <video id="my-player3" preload="auto" muted autoplay type="rtmp/flv">
+            <source src="">
+        </video>
+    </div>
+    <script src="./flv-1.6.2.js"></script>
+    <script>
+        window.onload = function () {
+            play();
+            play2();
+            play3();
+            // test();
+        };
+
+        //测试websocket收发消息
+        function test() {
+            const ws = new WebSocket('ws://127.0.0.1:8009/websocket/test')
+            ws.onopen = e => {
+                console.log(`WebSocket 连接状态： ${ws.readyState}`)
+            }
+
+            ws.onmessage = data => {
+                console.log("接收到消息");
+                const receiveBox = document.getElementById('receive-box')
+                receiveBox.innerHTML += `<p>${data.data}</p>`
+                receiveBox.scrollTo({
+                    top: receiveBox.scrollHeight,
+                    behavior: "smooth"
+                })
+            }
+
+            ws.onclose = data => {
+                console.log('WebSocket连接已关闭')
+                console.log(data);
+            }
+
+            //发送msg
+            var sendBtn = document.getElementById("send-btn");
+            sendBtn.onclick = () => {
+                ws.send(document.getElementById('msg-need-send').value)
+            }
+
+            //关闭websocket连接
+            var exitBtn = document.getElementById("exit");
+            exitBtn.onclick = () => {
+                ws.close()
+            }
+        }
+
+        //播放视频
+        function play() {
+            videoElement = document.getElementById('my-player');
+            if (flvjs.isSupported()) {
+                flvPlayer = flvjs.createPlayer({
+                    type: 'flv',					//媒体类型
+                    //flv格式媒体URL，即ws-server地址
+                    url: 'ws://127.0.0.1:8009/websocket/test',
+                    isLive: true,					//数据源是否为直播流
+                    hasAudio: false,				//数据源是否包含有音频
+                    hasVideo: true,					//数据源是否包含有视频
+                    enableStashBuffer: false		//是否启用缓存区
+                }, {
+                    enableWorker: false, 			//不启用分离线程
+                    enableStashBuffer: false, 		//关闭IO隐藏缓冲区
+                    autoCleanupSourceBuffer: true 	//自动清除缓存
+                });
+                flvPlayer.attachMediaElement(videoElement);	//将播放实例注册到节点
+                flvPlayer.load(); 					//加载数据流
+                flvPlayer.play();					//播放数据流
+            } else {
+                alert("not support flvjs");
+            }
+        }
+
+        //播放视频
+        function play2() {
+            videoElement = document.getElementById('my-player2');
+            if (flvjs.isSupported()) {
+                flvPlayer = flvjs.createPlayer({
+                    type: 'flv',					//媒体类型
+                    //flv格式媒体URL，即ws-server地址
+                    url: 'ws://127.0.0.1:8009/websocket/test',
+                    isLive: true,					//数据源是否为直播流
+                    hasAudio: false,				//数据源是否包含有音频
+                    hasVideo: true,					//数据源是否包含有视频
+                    enableStashBuffer: false		//是否启用缓存区
+                }, {
+                    enableWorker: false, 			//不启用分离线程
+                    enableStashBuffer: false, 		//关闭IO隐藏缓冲区
+                    autoCleanupSourceBuffer: true 	//自动清除缓存
+                });
+                flvPlayer.attachMediaElement(videoElement);	//将播放实例注册到节点
+                flvPlayer.load(); 					//加载数据流
+                flvPlayer.play();					//播放数据流
+            } else {
+                alert("not support flvjs");
+            }
+        }
+
+        //播放视频
+        function play3() {
+            videoElement = document.getElementById('my-player3');
+            if (flvjs.isSupported()) {
+                flvPlayer = flvjs.createPlayer({
+                    type: 'flv',					//媒体类型
+                    //flv格式媒体URL，即ws-server地址
+                    url: 'ws://127.0.0.1:8009/websocket/test',
+                    isLive: true,					//数据源是否为直播流
+                    hasAudio: false,				//数据源是否包含有音频
+                    hasVideo: true,					//数据源是否包含有视频
+                    enableStashBuffer: false		//是否启用缓存区
+                }, {
+                    enableWorker: false, 			//不启用分离线程
+                    enableStashBuffer: false, 		//关闭IO隐藏缓冲区
+                    autoCleanupSourceBuffer: true 	//自动清除缓存
+                });
+                flvPlayer.attachMediaElement(videoElement);	//将播放实例注册到节点
+                flvPlayer.load(); 					//加载数据流
+                flvPlayer.play();					//播放数据流
+            } else {
+                alert("not support flvjs");
+            }
+        }
+    </script>
+</body>
