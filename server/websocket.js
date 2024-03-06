@@ -25,9 +25,8 @@ router.ws('/test', (ws, req) => {
   }, {
     browserBufferTimeout: 1000000
   });
-   var url = "rtsp://admin:Admin123@192.168.1.120:554/ch1/main/av_stream";
-  //var url = "rtsp://admin:hik12345+@192.168.1.119:554/ch1/main/av_stream";
-  //var url = "rtsp://192.168.1.83:554/openUrl/NZDUvlu";
+   var url = "rtsp://xxx:xxx@192.168.1.xxx:xxx/ch1/main/av_stream";
+
   try {
     ffmpeg(url)
       .addInputOption("-rtsp_transport", "tcp", "-buffer_size", "102400") // 这里可以添加一些 RTSP 优化的参数
